@@ -1,0 +1,55 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+  pre_build:
+    commands:
+      - |
+        if expr "${APPLICATION_NAME}" : ".*-ui" >/dev/null; then
+           echo "Downloading supported web browser driver for $APPLICATION_NAME";
+           export google_chrome_version="109.0.5414.74-1"
+           export chrome_driver_version="109.0.5414.74"
+           yum update -y
+           yum install GConf2 liberation-fonts-common gtk3 libappindicator-gtk3 yum-utils libXScrnSaver redhat-lsb-core alsa-lib-devel dbus-x11 ImageMagick Xvfb net-tools -y
+           curl -O https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${google_chrome_version}.x86_64.rpm
+           ls -l /usr/bin
+           rpm -Uvh --nodeps google-chrome-stable-${google_chrome_version}.x86_64.rpm
+           mv /usr/bin/google-chrome-stable /usr/bin/google-chrome
+           ls -l /usr/bin
+           google-chrome -version
+           which google-chrome
+           curl -O https://chromedriver.storage.googleapis.com/${chrome_driver_version}/chromedriver_linux64.zip
+           unzip -x -o chromedriver_linux64.zip -d /usr/bin/
+           chmod +x /usr/bin/chromedriver
+        fi
+  build:
+    commands:
+        - cd pxp-command-center-qa
+        - REPLACE_STRING="${ENVIRONMENT}-"
+        - testSuiteName=$(echo $APPLICATION_NAME | sed "s/$REPLACE_STRING/ /")
+        - testSuiteName=`echo $testSuiteName | sed 's/ *$//g'`
+        - testSuiteFileName="${testSuiteName}_test.xml"
+        #- envsubst '${ENVIRONMENT}' < ./testConfig.properties > ./testConfig.properties
+        - echo "Starting the test execution.."
+        - |
+          if expr "${APPLICATION_NAME}" : ".*-ui" >/dev/null; then
+             echo "Running Smoke Test for $APPLICATION_NAME on $ENVIRONMENT";
+             mvn -ntp -U clean test -Dsuite.xml=cc-ui_build_verification_test.xml -Dtest.environment=${ENVIRONMENT} -Dselenium.browser="*chrome" -Dexecution.mode=headless             
+          else                                                       
+             if [ -f "$testSuiteFileName" ]; then
+                echo "Running Test Suite for $APPLICATION_NAME in $ENVIRONMENT";
+                mvn -ntp -U clean test -Dsuite.xml=${testSuiteFileName} -Dtest.environment=${ENVIRONMENT} -Dexecution.mode=headless
+             else
+                echo "Test Suite run failed for $APPLICATION_NAME in $ENVIRONMENT. Unable to find $testSuiteFileName in the path.";
+             fi
+          fi
+  post_build:
+    commands:
+      - echo "Starting Post Build.."
+reports:
+  ${APPLICATION_NAME}-Test-Report:
+    files:
+      - pxp-command-center-qa/target/surefire-reports/testng-results.xml
+    file-format: "TestNGXML"
