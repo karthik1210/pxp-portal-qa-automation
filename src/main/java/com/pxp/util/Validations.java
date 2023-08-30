@@ -3,7 +3,6 @@
 package com.pxp.util;
 
 import com.pxp.model.BaseRest;
-import com.pxp.objectmaps.PPMainPage;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.json.JSONArray;
@@ -15,9 +14,9 @@ public class Validations extends BaseRest {
 
     public void verifyRequestIdAndPracticeIdOnEventDataResponseBody(Response response, String requestId, String event, String practiceId) throws IOException {
         JsonPath jsonpath = new JsonPath(response.getBody().asString());
-        PPUtils.assertNotNull(jsonpath, "Response is null");
-        PPUtils.assertNotNull(jsonpath.get("eventRequestId"), "Request id is not in the response");
-        PPUtils.assertNotNull(jsonpath.get("portalPracticeId"), "Client name is not in the response");
+        PpUtils.assertNotNull(jsonpath, "Response is null");
+        PpUtils.assertNotNull(jsonpath.get("eventRequestId"), "Request id is not in the response");
+        PpUtils.assertNotNull(jsonpath.get("portalPracticeId"), "Client name is not in the response");
         JSONArray jsonArray = new JSONArray(response.getBody().asString());
         JSONObject jsonObject;
         int flag = 0;
@@ -29,7 +28,7 @@ public class Validations extends BaseRest {
                         new AssertionError();
                     logStep(jsonObject.get("portalPracticeId").toString());
                     logStep(practiceId);
-                    PPUtils.assertEquals(jsonObject.get("portalPracticeId"), practiceId);
+                    PpUtils.assertEquals(jsonObject.get("portalPracticeId"), practiceId);
                     logStep("Event Request Id on Response : " + jsonObject.get("eventRequestId") + " contains given request id : " + requestId);
                     logStep("Portal Practice Id on Response : " + jsonObject.get("portalPracticeId") + " contains given practice id : " + practiceId);
                     flag = 1;

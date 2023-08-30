@@ -2,10 +2,10 @@
 
 package com.pxp.testcases.api;
 
-import com.pxp.helpers.PP_NGE_INTEGRATION_SERVICE;
+import com.pxp.helpers.Pp_Nge_Integration_Service;
 import com.pxp.helpers.Sample;
 import com.pxp.model.BaseRest;
-import com.pxp.objectmaps.PPMainPage;
+import com.pxp.objectmaps.PpMainPage;
 import com.pxp.util.Validations;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
@@ -15,17 +15,17 @@ import org.testng.annotations.Test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class PPNGEINTEGRATION extends BaseRest {
+public class PpNgeIntegration extends BaseRest {
 
     Response getNgeIntegration;
-    PP_NGE_INTEGRATION_SERVICE pp_nge_integration_service;
+    Pp_Nge_Integration_Service pp_nge_integration_service;
     Validations validations = new Validations();
     Sample sample;
 
     @BeforeClass()
     public void setBaseUri() throws Exception {
         setupServiceRequestSpecificationBuilder();
-        pp_nge_integration_service = new PP_NGE_INTEGRATION_SERVICE();
+        pp_nge_integration_service = new Pp_Nge_Integration_Service();
     }
 
     @DataProvider(name = "getPracticeId")
@@ -48,7 +48,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithValidPracticeId() throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 200 || getNgeIntegration.getStatusCode() == 204;
     }
 
@@ -60,7 +60,7 @@ public class PPNGEINTEGRATION extends BaseRest {
         String startTime = (dtf.format(now) + ".001").replace("/", "-").replace(" ", "T");
         getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 204;
     }
 
@@ -68,7 +68,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithInvalidURI() throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegrationWithInvalidURI(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 404;
     }
 
@@ -76,7 +76,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithInvalidMethod() throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegrationWithInvalidMethod(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 405;
     }
 
@@ -84,7 +84,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithInvalidPracticeId(String practiceId) throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegration(practiceId, testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 400;
     }
 
@@ -92,7 +92,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithEmptyPracticeId() throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegration("", testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 404;
     }
 
@@ -100,7 +100,7 @@ public class PPNGEINTEGRATION extends BaseRest {
     public void getNGEIntegrationWithInvalidStartAndEndTime(String startTime, String endTime) throws Exception {
         getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
         logStep("Validating response information");
-        PPMainPage.responseTimeValidation(getNgeIntegration);
+        PpMainPage.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 400;
     }
 

@@ -27,16 +27,16 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PPMainPage extends BasePageObject {
+public class PpMainPage extends BasePageObject {
 
 	private static String numericString =  "0123456789";
 
-	public PPMainPage(WebDriver driver) {
+	public PpMainPage(WebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 	}
 
-	public PPMainPage(WebDriver driver, String url) {
+	public PpMainPage(WebDriver driver, String url) {
 		super(driver);
 		if (url != null) {
 			String sanitizedUrl = url.trim();

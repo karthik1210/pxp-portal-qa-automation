@@ -6,14 +6,14 @@ import org.openqa.selenium.WebDriver;
 
 import com.medfusion.common.utils.PropertyFileLoader;
 
-public class PPUI extends GenericTest {
+public class PpUi extends GenericTest {
 
 	public static PropertyFileLoader testData;
 	public static WebDriver driver;
-	public static PPUI PPUI;
+	public static PpUi PPUI;
 
 	/////// Constructor
-	public PPUI(PropertyFileLoader testData, WebDriver driver) {
+	public PpUi(PropertyFileLoader testData, WebDriver driver) {
 		this.testData = testData;
 		this.driver = driver;
 	}
@@ -23,9 +23,9 @@ public class PPUI extends GenericTest {
 	/////////// Variables Test Data
 
 
-	public PPUI getPpui() throws InterruptedException {
+	public PpUi getPpui() throws InterruptedException {
 		if (PPUI == null) {
-			PPUI = new PPUI(testData, driver);
+			PPUI = new PpUi(testData, driver);
 		}
 		return PPUI;
 	}

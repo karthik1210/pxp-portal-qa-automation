@@ -16,7 +16,6 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
@@ -24,14 +23,14 @@ public class BaseRest extends BaseTestNG {
 	public static RequestSpecification requestSpec;
 	public static ResponseSpecification responseSpec;
 	public JsonPath jsonPath;
-	public PXPInit PXPInit;
+	public PxpInit PXPInit;
 	public PropertyFileLoader testData;
 
 	@BeforeClass(alwaysRun = true)
 	public void setUpTestData() throws Exception {
 		testData = new PropertyFileLoader();
 		log("Setting up the Test Data.");
-		PXPInit = new PXPInit(testData);
+		PXPInit = new PxpInit(testData);
 		PXPInit.init();
 		BasicConfigurator.configure();
 	}

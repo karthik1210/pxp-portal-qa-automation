@@ -10,17 +10,14 @@ import com.amazonaws.services.logs.AWSLogsClientBuilder;
 import com.amazonaws.services.logs.model.GetLogEventsRequest;
 import com.amazonaws.services.logs.model.GetLogEventsResult;
 import com.amazonaws.services.logs.model.OutputLogEvent;
-import com.pxp.config.SQSConfig;
+import com.pxp.config.SqsConfig;
 import com.pxp.model.BaseRest;
-import com.pxp.objectmaps.PPMainPage;
-import com.pxp.producer.HREventQueueProducer;
+import com.pxp.producer.HrEventQueueProducer;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +29,7 @@ public class Sample extends BaseRest {
 
         //producer
 
-        HREventQueueProducer producer = new HREventQueueProducer(new SQSConfig().amazonSQSAsync());
+        HrEventQueueProducer producer = new HrEventQueueProducer(new SqsConfig().amazonSQSAsync());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("requestId", requestId);

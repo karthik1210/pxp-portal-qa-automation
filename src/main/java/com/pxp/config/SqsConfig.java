@@ -19,7 +19,7 @@ import org.springframework.messaging.handler.invocation.HandlerMethodArgumentRes
 import java.util.Collections;
 
 @Configuration
-public class SQSConfig {
+public class SqsConfig {
 
     @Bean
     @Primary

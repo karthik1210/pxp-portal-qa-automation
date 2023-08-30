@@ -18,7 +18,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.*;
@@ -30,7 +29,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.openqa.selenium.StaleElementReferenceException;
 
-public class PPUtils {
+public class PpUtils {
     public static int repeat = 0;
     private static final String symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$&@?<>~!%#";
     private static final SecureRandom random = new SecureRandom();
@@ -446,7 +445,7 @@ public class PPUtils {
     }
 
     public String getDefaultItemsPerPageOfWebPage(WebElement ele, WebDriver driver) throws InterruptedException {
-        PPUtils.verifyAndWaitForElement(ele, driver);
+        PpUtils.verifyAndWaitForElement(ele, driver);
         return ele.getText().toString();
     }
 
@@ -474,7 +473,7 @@ public class PPUtils {
     }
 
     public String splitingPagination(WebElement ele, WebDriver driver) {
-        PPUtils.verifyAndWaitForElement(ele, driver);
+        PpUtils.verifyAndWaitForElement(ele, driver);
         String s1 = ele.getText().toString();
         String[] words = s1.split("\\s", 3);
         String data = null;
@@ -513,7 +512,7 @@ public class PPUtils {
     }
 
     public static boolean isPaginationButtonDisabled(WebElement ele, WebDriver driver) {
-        PPUtils.verifyAndWaitForElement(ele, driver);
+        PpUtils.verifyAndWaitForElement(ele, driver);
         Log4jUtil.log("Verifying the visiblity of " + ele.getAttribute("aria-label") + " Button.");
         boolean buttonStatus = ele.isEnabled();
         Log4jUtil.log(
