@@ -1,4 +1,4 @@
-// Copyright 2023-2024 NXGN Management, LLC. All Rights Reserved.
+// Copyright 2023 NXGN Management, LLC. All Rights Reserved.
 
 package com.pxp.config;
 
@@ -19,7 +19,7 @@ import org.springframework.messaging.handler.invocation.HandlerMethodArgumentRes
 import java.util.Collections;
 
 @Configuration
-public class SqsConfig {
+public class SQSConfig {
 
     @Bean
     @Primary

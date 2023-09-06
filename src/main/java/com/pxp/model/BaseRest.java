@@ -23,38 +23,25 @@ public class BaseRest extends BaseTestNG {
 	public static RequestSpecification requestSpec;
 	public static ResponseSpecification responseSpec;
 	public JsonPath jsonPath;
-	public PxpInit PXPInit;
+	public com.pxp.model.PXPInit PXPInit;
 	public PropertyFileLoader testData;
-
-	@BeforeClass(alwaysRun = true)
-	public void setUpTestData() throws Exception {
-		testData = new PropertyFileLoader();
-		log("Setting up the Test Data.");
-		PXPInit = new PxpInit(testData);
-		PXPInit.init();
-		BasicConfigurator.configure();
-	}
 
 	@BeforeMethod(enabled = true)
 	public void getMethodName(ITestResult result) throws IOException {
 		log("Method Name-- " + result.getMethod().getMethodName());
 	}
 
-/*	public String getTokenValue() throws IOException {
-		RestAssured.baseURI = PXPInit.getAuthBaseUrl();
-		Response response = given().auth().preemptive()
-				.basic(PXPInit.getCommandCenterUser(), PXPInit.getCommandCenterPassword()).when()
-				.post(ApiPath.POST_SIGNIN).then().log().all().extract().response();
-		String token = response.jsonPath().get("token").toString();
-		return token;
-	}*/
-
+	public BaseRest() throws Exception {
+		testData = new PropertyFileLoader();
+		log("Setting up the Test Data.");
+		PXPInit = new PXPInit(testData);
+		PXPInit.init();
+		BasicConfigurator.configure();
+	}
 
 	public void setupServiceRequestSpecificationBuilder() throws IOException {
 		RestAssured.baseURI = testData.getProperty("base.uri");
 		requestSpec = new RequestSpecBuilder().setContentType(ApiPath.CONTENT_TYPE)
 				.addFilter(new ResponseLoggingFilter()).addFilter(new RequestLoggingFilter()).build();
 	}
-
-
 }

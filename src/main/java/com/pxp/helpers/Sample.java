@@ -10,9 +10,9 @@ import com.amazonaws.services.logs.AWSLogsClientBuilder;
 import com.amazonaws.services.logs.model.GetLogEventsRequest;
 import com.amazonaws.services.logs.model.GetLogEventsResult;
 import com.amazonaws.services.logs.model.OutputLogEvent;
-import com.pxp.config.SqsConfig;
+import com.pxp.config.SQSConfig;
 import com.pxp.model.BaseRest;
-import com.pxp.producer.HrEventQueueProducer;
+import com.pxp.producer.HREventQueueProducer;
 import org.json.JSONObject;
 
 
@@ -23,13 +23,16 @@ import java.util.stream.Collectors;
 
 public class Sample extends BaseRest {
 
-    public void sqs_ecs_logs_workflow(String requestId, String event, String practiceId) throws InterruptedException {
+    public Sample() throws Exception {
+    }
+
+    public void sqs_ecs_logs_workflow(String requestId, String event, String practiceId) throws Exception {
         String taskSuffix = null;
         String containerInstanceArn = null;
 
         //producer
 
-        HrEventQueueProducer producer = new HrEventQueueProducer(new SqsConfig().amazonSQSAsync());
+        HREventQueueProducer producer = new HREventQueueProducer(new SQSConfig().amazonSQSAsync());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("requestId", requestId);
@@ -42,7 +45,9 @@ public class Sample extends BaseRest {
 
         Thread.sleep(5000);
 
-        //ECS
+        //ECS log container removed. Hence, commented
+
+        /*//ECS
 
         AmazonECS ECSclient = AmazonECSClientBuilder.standard().build();
 
@@ -88,7 +93,7 @@ public class Sample extends BaseRest {
 
         finalCollect.forEach(s -> System.out.println(s.getMessage()));
 
-        logStep("pp-hr-event service successfully consuming data!!");
+        logStep("pp-hr-event service successfully consuming data!!");*/
 
     }
 }

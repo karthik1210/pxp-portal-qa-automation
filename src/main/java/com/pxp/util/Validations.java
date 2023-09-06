@@ -2,6 +2,7 @@
 
 package com.pxp.util;
 
+import com.pxp.model.BaseClass;
 import com.pxp.model.BaseRest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -10,13 +11,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class Validations extends BaseRest {
+import static com.intuit.ifs.csscat.core.utils.Log4jUtil.log;
+
+public class Validations extends BaseClass {
 
     public void verifyRequestIdAndPracticeIdOnEventDataResponseBody(Response response, String requestId, String event, String practiceId) throws IOException {
         JsonPath jsonpath = new JsonPath(response.getBody().asString());
-        PpUtils.assertNotNull(jsonpath, "Response is null");
-        PpUtils.assertNotNull(jsonpath.get("eventRequestId"), "Request id is not in the response");
-        PpUtils.assertNotNull(jsonpath.get("portalPracticeId"), "Client name is not in the response");
+        BaseClass.assertNotNull(jsonpath, "Response is null");
+        BaseClass.assertNotNull(jsonpath.get("eventRequestId"), "Request id is not in the response");
+        BaseClass.assertNotNull(jsonpath.get("portalPracticeId"), "Client name is not in the response");
         JSONArray jsonArray = new JSONArray(response.getBody().asString());
         JSONObject jsonObject;
         int flag = 0;
@@ -26,11 +29,11 @@ public class Validations extends BaseRest {
                 if (jsonObject.get("eventRequestId").equals(requestId)) {
                     if(event.contains("DEACTIVATED"))
                         new AssertionError();
-                    logStep(jsonObject.get("portalPracticeId").toString());
-                    logStep(practiceId);
-                    PpUtils.assertEquals(jsonObject.get("portalPracticeId"), practiceId);
-                    logStep("Event Request Id on Response : " + jsonObject.get("eventRequestId") + " contains given request id : " + requestId);
-                    logStep("Portal Practice Id on Response : " + jsonObject.get("portalPracticeId") + " contains given practice id : " + practiceId);
+                    log(jsonObject.get("portalPracticeId").toString());
+                    log(practiceId);
+                    BaseClass.assertEquals(jsonObject.get("portalPracticeId"), practiceId);
+                    log("Event Request Id on Response : " + jsonObject.get("eventRequestId") + " contains given request id : " + requestId);
+                    log("Portal Practice Id on Response : " + jsonObject.get("portalPracticeId") + " contains given practice id : " + practiceId);
                     flag = 1;
                 }
             }
@@ -39,8 +42,8 @@ public class Validations extends BaseRest {
                 throw new AssertionError();
 
             if (flag == 0 && event.equalsIgnoreCase("LAB_SOLUTION_DEACTIVATED_EVENT")) {
-                logStep("Given Request Id and practice Id not available in the API Response");
-                logStep("For LAB DEACTIVATION EVENT, Data will not be fectched in API Response, It is working as expected");
+                log("Given Request Id and practice Id not available in the API Response");
+                log("For LAB DEACTIVATION EVENT, Data will not be fectched in API Response, It is working as expected");
             }
         }
     }

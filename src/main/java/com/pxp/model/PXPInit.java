@@ -7,14 +7,14 @@ import com.medfusion.common.utils.PropertyFileLoader;
 import lombok.Data;
 
 @Data
-public class PxpInit {
+public class PXPInit {
 
 	private PropertyFileLoader properties;
 	public String url;
 	public String username;
 	public String password;
 
-	public PxpInit(PropertyFileLoader property) {
+	public PXPInit(PropertyFileLoader property) {
 		properties = property;
 	}
 

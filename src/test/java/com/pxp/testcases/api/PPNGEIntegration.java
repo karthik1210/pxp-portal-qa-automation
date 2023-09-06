@@ -2,10 +2,13 @@
 
 package com.pxp.testcases.api;
 
-import com.pxp.helpers.Pp_Nge_Integration_Service;
+import com.pxp.base.IntegrationDb;
+import com.pxp.base.TestBase;
+import com.pxp.helpers.PPNGEIntegrationService;
 import com.pxp.helpers.Sample;
+import com.pxp.model.BaseClass;
 import com.pxp.model.BaseRest;
-import com.pxp.objectmaps.PpMainPage;
+import com.pxp.queries.PIDCQueries;
 import com.pxp.util.Validations;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
@@ -15,17 +18,28 @@ import org.testng.annotations.Test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class PpNgeIntegration extends BaseRest {
+import static com.intuit.ifs.csscat.core.utils.Log4jUtil.log;
+
+public class PPNGEIntegration extends TestBase {
 
     Response getNgeIntegration;
-    Pp_Nge_Integration_Service pp_nge_integration_service;
+    PPNGEIntegrationService ppNGEIntegrationService;
     Validations validations = new Validations();
     Sample sample;
+    BaseRest baseRest;
+    IntegrationDb integrationDb;
+    PIDCQueries pidcQueries;
+
+    public PPNGEIntegration() throws Exception {
+        baseRest = new BaseRest();
+        pidcQueries = new PIDCQueries();
+    }
 
     @BeforeClass()
     public void setBaseUri() throws Exception {
-        setupServiceRequestSpecificationBuilder();
-        pp_nge_integration_service = new Pp_Nge_Integration_Service();
+        baseRest.setupServiceRequestSpecificationBuilder();
+        ppNGEIntegrationService = new PPNGEIntegrationService();
+        integrationDb = new IntegrationDb(testData);
     }
 
     @DataProvider(name = "getPracticeId")
@@ -46,9 +60,9 @@ public class PpNgeIntegration extends BaseRest {
 
     @Test(priority = 1, description = "verify 200 ok status is displayed when valid parameter is passed to fetch lab results")
     public void getNGEIntegrationWithValidPracticeId() throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 200 || getNgeIntegration.getStatusCode() == 204;
     }
 
@@ -58,49 +72,49 @@ public class PpNgeIntegration extends BaseRest {
         LocalDateTime now = LocalDateTime.now();
         String endTime = (dtf.format(now) + ".002").replace("/", "-").replace(" ", "T");
         String startTime = (dtf.format(now) + ".001").replace("/", "-").replace(" ", "T");
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 204;
     }
 
     @Test(priority = 3, description = "verify 404 Not Found is displayed when invalid url is passed to fetch lab results ")
     public void getNGEIntegrationWithInvalidURI() throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegrationWithInvalidURI(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegrationWithInvalidURI(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 404;
     }
 
     @Test(priority = 4, description = "verify 405 Method Not Allowed is displayed when valid parameter is passed to fetch lab results using Patch Request")
     public void getNGEIntegrationWithInvalidMethod() throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegrationWithInvalidMethod(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegrationWithInvalidMethod(Integer.parseInt(testData.getProperty("validPracticeId")), testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 405;
     }
 
     @Test(priority = 5, dataProvider = "getPracticeId", description = "verify 400 Bad Request is displayed when Non-Existing practice Id/null/invalid datatype on practice id is passed to fetch lab results")
     public void getNGEIntegrationWithInvalidPracticeId(String practiceId) throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegration(practiceId, testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegration(practiceId, testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 400;
     }
 
     @Test(priority = 6, description = "verify 404 Not Found is displayed when empty on practice id is passed to fetch lab results ")
     public void getNGEIntegrationWithEmptyPracticeId() throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegration("", testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegration("", testData.getProperty("fetchStartTime"), testData.getProperty("fetchEndTime"));
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 404;
     }
 
     @Test(priority = 7, dataProvider = "getStartAndEndTime", description = "verify 400 Bad Request is displayed when Null/Invalid datatype/empty/Invalid timestamp on start /end time and valid practice id  to fetch lab results")
     public void getNGEIntegrationWithInvalidStartAndEndTime(String startTime, String endTime) throws Exception {
-        getNgeIntegration = pp_nge_integration_service.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
-        logStep("Validating response information");
-        PpMainPage.responseTimeValidation(getNgeIntegration);
+        getNgeIntegration = ppNGEIntegrationService.getNgeIntegration(Integer.parseInt(testData.getProperty("validPracticeId")), startTime, endTime);
+        log("Validating response information");
+        BaseClass.responseTimeValidation(getNgeIntegration);
         assert getNgeIntegration.getStatusCode() == 400;
     }
 

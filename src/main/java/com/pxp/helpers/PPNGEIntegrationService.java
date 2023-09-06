@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import static com.pxp.model.BaseRest.requestSpec;
 import static io.restassured.RestAssured.given;
 
-public class Pp_Nge_Integration_Service {
+public class PPNGEIntegrationService {
 
     public Response getNgeIntegration(int practiceId, String startTime, String endTime) {
         String url = ApiPath.GET_NGE_INTETGRATION(practiceId);

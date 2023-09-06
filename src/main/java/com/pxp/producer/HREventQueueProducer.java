@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Log4j2
-public class HrEventQueueProducer extends BaseRest {
+public class HREventQueueProducer extends BaseRest {
 
     @Autowired
     private final AmazonSQSAsync amazonSqs;
@@ -26,7 +26,8 @@ public class HrEventQueueProducer extends BaseRest {
     private Long waitTimeoutMillis;*/
 
     @Autowired
-    public HrEventQueueProducer(final AmazonSQSAsync amazonSQSAsync) {
+    public HREventQueueProducer(final AmazonSQSAsync amazonSQSAsync) throws Exception {
+        super();
         this.amazonSqs = amazonSQSAsync;
     }
 

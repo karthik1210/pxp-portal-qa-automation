@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import static com.pxp.model.BaseRest.requestSpec;
 import static io.restassured.RestAssured.given;
 
-public class Pp_Hr_Event_Data_Service {
+public class PPHREventDataService {
 
     public Response getHREventData(int realTime) {
         String url = ApiPath.GET_HR_EVENTDATA();
