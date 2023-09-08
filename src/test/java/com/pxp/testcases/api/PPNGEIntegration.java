@@ -14,11 +14,12 @@ import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import com.pxp.setup.Log4jUtil;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.intuit.ifs.csscat.core.utils.Log4jUtil.log;
+import static com.pxp.setup.Log4jUtil.log;
 
 public class PPNGEIntegration extends TestBase {
 

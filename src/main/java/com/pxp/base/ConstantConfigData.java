@@ -2,11 +2,12 @@
 
 package com.pxp.base;
 
-import com.medfusion.common.utils.PropertyFileLoader;
+import java.util.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.pxp.setup.PropertyFileLoader;
 import com.pxp.util.PatientRandomDetails;
 import com.pxp.util.TimeUtil;
 import org.apache.commons.lang.RandomStringUtils;

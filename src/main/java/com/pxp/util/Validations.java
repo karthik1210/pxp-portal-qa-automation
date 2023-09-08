@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import static com.intuit.ifs.csscat.core.utils.Log4jUtil.log;
+import static org.testng.internal.Utils.log;
 
 public class Validations extends BaseClass {
 

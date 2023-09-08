@@ -2,8 +2,7 @@
 
 package com.pxp.model;
 
-import com.medfusion.common.utils.PropertyFileLoader;
-
+import com.pxp.setup.PropertyFileLoader;
 import lombok.Data;
 
 @Data
@@ -28,6 +27,5 @@ public class PXPInit {
 		/*setUrl(getProperty("base.url"));
 		setUsername(getProperty("user.name"));
 		setPassword(getProperty("user.password"));*/
-
 	}
 }

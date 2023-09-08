@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.pxp.setup.Log4jUtil.log;
+
 
 public class Sample extends BaseRest {
 
@@ -41,7 +43,7 @@ public class Sample extends BaseRest {
 
         String jsonString = jsonObject.toString();
 
-        logStep("Status of SQS = " + producer.send(jsonString));
+        log("Status of SQS = " + producer.send(jsonString));
 
         Thread.sleep(5000);
 

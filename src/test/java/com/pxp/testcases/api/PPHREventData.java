@@ -1,10 +1,10 @@
 package com.pxp.testcases.api;
 
-import com.medfusion.common.utils.PropertyFileLoader;
 import com.pxp.helpers.PPHREventDataService;
 import com.pxp.helpers.Sample;
 import com.pxp.model.BaseClass;
 import com.pxp.model.BaseRest;
+import com.pxp.setup.PropertyFileLoader;
 import com.pxp.util.Validations;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;

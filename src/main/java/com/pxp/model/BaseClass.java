@@ -1,28 +1,22 @@
 package com.pxp.model;
 
-import com.intuit.ifs.csscat.core.utils.Log4jUtil;
-import com.intuit.ifs.csscat.core.wait.WaitForWEIsDisplayed;
+import com.pxp.base.TestBase;
+import com.pxp.setup.EnvironmentTypeSetUp;
+import com.pxp.setup.Log4jUtil;
+import com.pxp.setup.PropertyFileLoader;
+import com.pxp.setup.TestConfig;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.*;
 import org.testng.asserts.SoftAssert;
 
-import java.awt.Toolkit;
-import java.awt.Robot;
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.awt.event.KeyEvent;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -31,16 +25,15 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class BaseClass {
+public class BaseClass extends TestBase {
 
     protected static WebDriver driver;
+
+    public static Properties properties = new Properties();
 
     public static int repeat = 0;
     private static final String symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$&@?<>~!%#";
@@ -53,6 +46,11 @@ public class BaseClass {
     public static SoftAssert softAssert = new SoftAssert();
     private static String numericString =  "0123456789";
     private static String alphaNumericStringWithoutNumbersAndSpecialCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvxyz";
+
+    public static EnvironmentTypeSetUp.EnvironmentType getEnvironmentType() {
+        String env = TestConfig.getUserDefinedProperty("test.environment");
+        return env != null ? EnvironmentTypeSetUp.getEnvironmentType(env) : EnvironmentTypeSetUp.getEnvironmentType(String.valueOf(properties.getProperty("test.environment")).trim());
+    }
 
     public static String elementToString(WebElement element) {
         return "Element (id: " + element.getAttribute("id") + ", tag: " + element.getTagName() + ")";
@@ -539,7 +537,7 @@ public class BaseClass {
 
     public static void waitForElementVisible(WebElement element, long timeoutInSeconds) {
         Duration timeout = Duration.ofSeconds(timeoutInSeconds);
-        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, timeout);
         try {
             wait.until(ExpectedConditions.visibilityOf(element));
         } catch (Exception e) {
@@ -552,22 +550,22 @@ public class BaseClass {
 
     public static void waitUntilElementIsClickable(WebElement element, long timeoutInSeconds) {
         Duration waitTime = Duration.ofSeconds(timeoutInSeconds);
-        new WebDriverWait(driver, timeoutInSeconds).until(ExpectedConditions.elementToBeClickable(element));
+        new WebDriverWait(driver, waitTime).until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public static void waitUntilTextIsVisible(WebElement element, String testData, long timeoutInSeconds) {
         Duration timeout = Duration.ofSeconds(timeoutInSeconds);
-        new WebDriverWait(driver, timeoutInSeconds).until(ExpectedConditions.textToBePresentInElement(element, testData));
+        new WebDriverWait(driver, timeout).until(ExpectedConditions.textToBePresentInElement(element, testData));
     }
 
     public static void waitUntilElementIsVisible(WebElement element, long timeoutInSeconds) {
         Duration timeout = Duration.ofSeconds(timeoutInSeconds);
-        new WebDriverWait(driver, timeoutInSeconds).until(ExpectedConditions.visibilityOf(element));
+        new WebDriverWait(driver, timeout).until(ExpectedConditions.visibilityOf(element));
     }
 
     public static void waitUntilElementIsVisible(String element, long timeoutInSecond) {
         try {
-            new WebDriverWait(driver, timeoutInSecond).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(element)));
+            new WebDriverWait(driver, Duration.ofSeconds(timeoutInSecond)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(element)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -575,7 +573,7 @@ public class BaseClass {
 
     public static void waitUntilElementIsVisibleLocated(By by, long timeoutInSecond) {
         try {
-            new WebDriverWait(driver, timeoutInSecond).until(ExpectedConditions.visibilityOfElementLocated(by));
+            new WebDriverWait(driver, Duration.ofSeconds(timeoutInSecond)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -584,7 +582,7 @@ public class BaseClass {
     public static boolean explicitlyWaitForElementText(WebElement ele, String text, long timeoutInSecond) {
 
         try {
-            WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSecond));
             return wait.until(ExpectedConditions.textToBePresentInElement(ele, text));
         } catch (Exception e) {
             System.out.println("Failed to Get the Expected Text After waiting " + timeoutInSecond + "Second...");
@@ -629,8 +627,8 @@ public class BaseClass {
     }
 
     public static void verifyAndWaitForElement(WebElement we, WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(new WaitForWEIsDisplayed(we));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(we));
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -640,7 +638,7 @@ public class BaseClass {
 
     public static void verifyElementToBeClickable(WebElement we, WebDriver driver) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.invisibilityOf(we));
             wait.until(ExpectedConditions.elementToBeClickable(we));
         } catch (Exception exception) {
@@ -660,7 +658,7 @@ public class BaseClass {
 
     public static void verifyAndWaitForElementPresence(WebElement we, WebDriver driver) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.visibilityOf(we));
             wait.until(ExpectedConditions.stalenessOf(we));
         } catch (Exception exception) {
@@ -670,7 +668,7 @@ public class BaseClass {
 
     public static void verifyAndWaitForElementPresent(WebElement we, WebDriver driver) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.visibilityOf(we));
             wait.until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(we)));
         } catch (Exception exception) {
@@ -681,7 +679,7 @@ public class BaseClass {
     public static void verifyAndWaitForElementPresenceForInterfaceSetup(String externalSystemName, WebElement we, WebDriver driver) {
         while (repeat <= 5) {
             try {
-                WebDriverWait wait = new WebDriverWait(driver, 10);
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
                 wait.until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='"+externalSystemName+"']/../../following-sibling::td//mat-icon[@mattooltip='More Options']"))));
                 wait.until(ExpectedConditions.stalenessOf(we));
                 wait.until(ExpectedConditions.visibilityOf(we));
@@ -695,8 +693,8 @@ public class BaseClass {
 
     public static void verifyAndWaitForListOfElement(List<WebElement> web, WebDriver driver) {
         for (int i = 0; i < web.size(); i++) {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
-            wait.until(new WaitForWEIsDisplayed(web.get(i)));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(web.get(i)));
             try {
                 Thread.sleep(2300);
             } catch (InterruptedException e) {
@@ -708,7 +706,7 @@ public class BaseClass {
     public static void verifyAndWaitForTableList(WebElement we, WebDriver driver) {
         try {
             Log4jUtil.log("webdriverwait initiated");
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id='table']"))));
             Log4jUtil.log("webdriverwait Completed and tableClientTypeInSearchResult validation");
             wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(we)));
@@ -720,7 +718,7 @@ public class BaseClass {
     public static void verifyAndWaitForUserTableList(WebElement we, WebDriver driver) {
         try {
             Log4jUtil.log("webdriverwait initiated");
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@role='grid']"))));
             Log4jUtil.log("webdriverwait Completed and tableClientTypeInSearchResult validation");
             wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(we)));
@@ -1104,7 +1102,7 @@ public class BaseClass {
     }
 
     public static void verifyForElementToBeClickable(WebElement we, WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(we));
         try {
             Thread.sleep(5000);
@@ -1115,7 +1113,7 @@ public class BaseClass {
 
     public static void verifyAndWaitForPresenceOfListOfElement(List<WebElement> web, WebDriver driver) {
         for (int i = 0; i < web.size(); i++) {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
                     By.xpath("//tbody[@role='rowgroup']//tr[@id='locationList']//td[1]")));
             try {

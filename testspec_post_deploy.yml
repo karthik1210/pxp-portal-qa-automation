@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto8
+      java: corretto11
   pre_build:
     commands:
       - |
@@ -26,7 +26,7 @@ phases:
         fi
   build:
     commands:
-        - cd pxp-command-center-qa
+        - cd pxp-qa-autoamtion
         - REPLACE_STRING="${ENVIRONMENT}-"
         - testSuiteName=$(echo $APPLICATION_NAME | sed "s/$REPLACE_STRING/ /")
         - testSuiteName=`echo $testSuiteName | sed 's/ *$//g'`
@@ -36,7 +36,7 @@ phases:
         - |
           if expr "${APPLICATION_NAME}" : ".*-ui" >/dev/null; then
              echo "Running Smoke Test for $APPLICATION_NAME on $ENVIRONMENT";
-             mvn -ntp -U clean test -Dsuite.xml=cc-ui_build_verification_test.xml -Dtest.environment=${ENVIRONMENT} -Dselenium.browser="*chrome" -Dexecution.mode=headless             
+             mvn -ntp -U clean test -Dsuite.xml=pxp-ui_build_verification_test.xml -Dtest.environment=${ENVIRONMENT} -Dselenium.browser="*chrome" -Dexecution.mode=headless             
           else                                                       
              if [ -f "$testSuiteFileName" ]; then
                 echo "Running Test Suite for $APPLICATION_NAME in $ENVIRONMENT";
@@ -51,5 +51,5 @@ phases:
 reports:
   ${APPLICATION_NAME}-Test-Report:
     files:
-      - pxp-command-center-qa/target/surefire-reports/testng-results.xml
+      - pxp-qa-automation/target/surefire-reports/testng-results.xml
     file-format: "TestNGXML"

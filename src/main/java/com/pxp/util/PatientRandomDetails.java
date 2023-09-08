@@ -10,7 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import com.intuit.ifs.csscat.core.utils.Log4jUtil;
+
+import static org.testng.internal.Utils.log;
 
 public class PatientRandomDetails {
 
@@ -155,7 +156,7 @@ public class PatientRandomDetails {
 	public static String dateTimeformatter() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
-		Log4jUtil.log(formatter.format(now));
+		log(formatter.format(now));
 		return formatter.format(now);
 	}
 

@@ -2,13 +2,15 @@
 
 package com.pxp.objectmaps;
 
-import com.medfusion.common.utils.PropertyFileLoader;
 import com.pxp.base.IntegrationDb;
 import com.pxp.model.BaseClass;
 import com.pxp.queries.PIDCQueries;
+import com.pxp.setup.PropertyFileLoader;
 import com.pxp.util.PIDCInfo;
 import com.pxp.util.PatientRandomDetails;
 import com.pxp.util.TimeUtil;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.RandomUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
@@ -19,6 +21,11 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.time.Month;
 import java.util.List;
+
+import static com.pxp.setup.Log4jUtil.log;
+
+@Getter
+@Setter
 
 public class PatientCreationUIPage extends BaseClass {
 
@@ -411,7 +418,7 @@ public class PatientCreationUIPage extends BaseClass {
     @FindBy(xpath = "//*[@id='phone_type']")
     private WebElement selectPhoneType;
 
-    @FindBy(xpath = "//div[@class='ng-input']")
+    @FindBy(xpath = "//div[@class='ng-input'] | //div[@id='mat-select-value-3']")
     private WebElement selectLocation;
 
     @FindBy(xpath = "//*[@id='preferredLocationId_field']/mflocations/div/ng-select/div/div/div[2]/input")
@@ -423,14 +430,21 @@ public class PatientCreationUIPage extends BaseClass {
     @FindBy(xpath = "//*[@id='updateMissingInfoButton']")
     private WebElement updateMissingInfo;
 
+    @FindBy(xpath = "//span[contains(text(),'What was the name of your childhood best friend?')]")
+    private WebElement selectQuestionOnSecret;
+
+    @FindBy(xpath = "//mat-option[@role='option']/span[contains(text(),'Default Location')]")
+    private WebElement defaultLocation;
+
     public void selectMonthDropDownOption() {
+        log("Dob"+pidcInfo.getDob());
         int month = Integer.parseInt(String.valueOf(pidcInfo.getDob()).substring(4, 6));
         String monthstr = Month.of(month).toString().toLowerCase();
         String monthName = monthstr.substring(0, 1).toUpperCase() + monthstr.substring(1);
         /*Select Month = new Select(selectMonth);
         Month.selectByVisibleText(monthName);*/
         driver.findElement(By.xpath("//mat-select[@id='birthDate_month']")).click();
-        driver.findElement(By.xpath("//mat-option["+month+"]"));
+        driver.findElement(By.xpath("//mat-option[@value='"+month+"']")).click();
     }
 
     public void selectDayDropDownOption() {
@@ -439,9 +453,12 @@ public class PatientCreationUIPage extends BaseClass {
         daySelect.selectByVisibleText(String.valueOf(day));
     }
 
-    public void selectSecretQuestion() {
-        Select que = new Select(selectSecretQuestion);
-        que.selectByVisibleText("What was the name of your childhood best friend?");
+    public void selectSecretQuestion() throws InterruptedException {
+        waitUntilElementIsVisible(selectSecretQuestion, 10);
+        /*Select que = new Select(selectSecretQuestion);
+        que.selectByVisibleText("What was the name of your childhood best friend?");*/
+        selectSecretQuestion.click();
+        Thread.sleep(5000);
     }
 
     public void selectPhoneType(int index) {
@@ -488,26 +505,29 @@ public class PatientCreationUIPage extends BaseClass {
             }
         }
         switchToWindow(driver);
+        log("ZIP : "+pidcInfo.getZipCode());
+        log("DOB : "+pidcInfo.getDob());
+        log("FN : "+pidcInfo.getPatientFirstName());
+        log("LN : "+pidcInfo.getPatientLastName());
+        log("personId : "+pidcInfo.getPatientPersonId());
         sendKeysWithTimeout(zipCode, String.valueOf(pidcInfo.getZipCode()), 50);
         selectMonthDropDownOption();
         sendKeys(dayOnYopmail, String.valueOf(pidcInfo.getDob()).substring(6, 8));
         sendKeys(selectYear, String.valueOf(pidcInfo.getDob()).substring(0, 4));
-        clickButton(nextStep, 10);
+        waitFor(3000);
+        clickWithActionCls(nextStep);
         selectSecretQuestion();
+        click(selectQuestionOnSecret,  10);
         sendKeys(secretQAns, "Friend");
         sendKeys(userName, pidcInfo.getPatientFirstName());
         sendKeys(passWord, "Admin@123");
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0,250)", "");
-        sendKeys(phone1, "999");
-        sendKeys(phone2, "999");
-        sendKeys(phone3, "9999");
-        selectPhoneType(1);
+        sendKeys(phone1, "6461111111");
         waitFor(2000);
         clickButton(selectLocation, 5);
-        sendKeys(enterLocation, "Alaska");
-        sendKeys(enterLocation, Keys.ENTER);
-        clickButton(finishStep, 10);
+        click(defaultLocation, 10);
+        clickWithActionCls(finishStep);
         if (driver.getPageSource().contains(" Please correct the problems indicated below. ")) {
             js.executeScript("window.scrollBy(0,250)", "");
             sendKeys(enterLocation, "Another Location");

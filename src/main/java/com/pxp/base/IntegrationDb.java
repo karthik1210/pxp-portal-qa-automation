@@ -3,9 +3,9 @@
 package com.pxp.base;
 
 import com.pxp.objectmaps.PatientCreationAndActivationPage;
+import com.pxp.setup.PropertyFileLoader;
 import com.pxp.util.DBUtils;
 import org.openqa.selenium.WebDriver;
-import com.medfusion.common.utils.PropertyFileLoader;
 import java.io.IOException;
 
 public class IntegrationDb {

@@ -1,10 +1,10 @@
 package com.pxp.objectmaps;
 
-import com.medfusion.common.utils.PropertyFileLoader;
 import com.pxp.base.ConstantConfigData;
 import com.pxp.base.IntegrationDb;
 import com.pxp.base.TestBase;
 import com.pxp.queries.PIDCQueries;
+import com.pxp.setup.PropertyFileLoader;
 import com.pxp.util.DBUtils;
 import com.pxp.util.PIDCInfo;
 import com.pxp.util.PatientRandomDetails;
@@ -253,6 +253,8 @@ public class PatientCreationAndActivationPage extends TestBase {
             pidcInfo.setPatientAdd1(rs.getString("address_line_1"));
             pidcInfo.setPatientAdd2(rs.getString("address_line_2"));
             pidcInfo.setPatientEmail(rs.getString("email_address"));
+            pidcInfo.setDob(Integer.parseInt(rs.getString("date_of_birth")));
+            pidcInfo.setZipCode(Integer.parseInt(rs.getString("zip")));
         }
         return patientPersonId;
     }

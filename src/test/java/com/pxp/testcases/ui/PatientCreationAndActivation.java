@@ -1,26 +1,18 @@
 package com.pxp.testcases.ui;
-
-import com.medfusion.common.utils.PropertyFileLoader;
-import com.pxp.base.ConstantConfigData;
 import com.pxp.base.IntegrationDb;
-import com.pxp.base.TestBase;
 import com.pxp.model.BaseClass;
 import com.pxp.model.PXPInit;
 import com.pxp.queries.PIDCQueries;
-import com.pxp.util.PIDCInfo;
-import com.pxp.util.PatientRandomDetails;
+import com.pxp.setup.PropertyFileLoader;
+import com.pxp.setup.TestConfig;
 import org.apache.log4j.BasicConfigurator;
-import org.jsoup.Connection;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import static org.testng.internal.Utils.log;
 
-import static com.intuit.ifs.csscat.core.utils.Log4jUtil.log;
-
-public class test extends TestBase {
+public class PatientCreationAndActivation extends BaseClass {
 
     PropertyFileLoader testData;
     String personId = "";
@@ -35,13 +27,13 @@ public class test extends TestBase {
         pxpInit.init();
         BasicConfigurator.configure();
         ppUi = new PPUi(testData, driver);
-        ppUi.getDriver("chrome");
+        ppUi.getDriver(TestConfig.getBrowserType());
         integrationDb = new IntegrationDb(testData);
         pidcQueries = new PIDCQueries();
     }
 
     @Test
-    public void test() throws Exception {
+    public void createPatientAndActivation() throws Exception {
         personId = integrationDb.getIntegrationDb().getPatientCreationAndActivationPage().createPatient();
         String email = pidcQueries.getEmail(personId);
         ppUi.getPPui().getPatientCreationUIPage().activatePatient(email);

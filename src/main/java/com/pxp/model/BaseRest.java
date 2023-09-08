@@ -3,13 +3,15 @@
 package com.pxp.model;
 
 import static io.restassured.RestAssured.given;
+import static org.testng.internal.Utils.log;
+
 import java.io.IOException;
+
+import com.pxp.setup.PropertyFileLoader;
 import org.apache.log4j.BasicConfigurator;
 import org.testng.ITestResult;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import com.intuit.ifs.csscat.core.BaseTestNG;
-import com.medfusion.common.utils.PropertyFileLoader;
 import com.pxp.apipath.ApiPath;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -19,7 +21,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-public class BaseRest extends BaseTestNG {
+public class BaseRest {
 	public static RequestSpecification requestSpec;
 	public static ResponseSpecification responseSpec;
 	public JsonPath jsonPath;
